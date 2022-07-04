@@ -205,15 +205,15 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     CreateRequest createRequest = new CreateRequest();
                     ZooKeeperServer.byteBuffer2Record(request.request, createRequest);
                     String path = createRequest.getPath();
-                    int var5 = path.lastIndexOf('/');
-                    if (var5 == -1 || path.indexOf('\0') != -1 || failCreate) {
+                    int lastSlash = path.lastIndexOf('/');
+                    if (lastSlash == -1 || path.indexOf('\0') != -1 || failCreate) {
                         LOG.warn("Invalid path " + path + " with session " + Long.toHexString(request.sessionId));
                         throw new KeeperException.BadArgumentsException();
                     }
                     if (!fixupACL(request.authInfo, createRequest.getAcl())) {
                         throw new KeeperException.InvalidACLException();
                     }
-                    String parentPath = path.substring(0, var5);
+                    String parentPath = path.substring(0, lastSlash);
                     ChangeRecord parentRecord = getRecordForPath(parentPath);
                     checkACL(zks, parentRecord.acl, ZooDefs.Perms.CREATE, request.authInfo);
                     int parentCVersion = parentRecord.stat.getCversion();
@@ -233,7 +233,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                         }
                     } catch (KeeperException.NoNodeException e) {
                     }
-                    boolean ephemeralParent = parentRecord.stat.getEphemeralOwner() != 0;
+                    boolean ephemeralParent = 0 != parentRecord.stat.getEphemeralOwner();
                     if (ephemeralParent) {
                         throw new KeeperException.NoChildrenForEphemeralsException();
                     }
@@ -254,11 +254,11 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     DeleteRequest deleteRequest = new DeleteRequest();
                     ZooKeeperServer.byteBuffer2Record(request.request, deleteRequest);
                     path = deleteRequest.getPath();
-                    var5 = path.lastIndexOf('/');
-                    if (var5 == -1 || path.indexOf('\0') != -1 || zks.dataTree.isSpecialPath(path)) {
+                    lastSlash = path.lastIndexOf('/');
+                    if (lastSlash == -1 || path.indexOf('\0') != -1 || zks.dataTree.isSpecialPath(path)) {
                         throw new KeeperException.BadArgumentsException();
                     }
-                    parentPath = path.substring(0, var5);
+                    parentPath = path.substring(0, lastSlash);
                     parentRecord = getRecordForPath(parentPath);
                     ChangeRecord nodeRecord = getRecordForPath(path);
                     checkACL(zks, parentRecord.acl, ZooDefs.Perms.DELETE, request.authInfo);

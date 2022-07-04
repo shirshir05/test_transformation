@@ -263,7 +263,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     ChangeRecord nodeRecord = getRecordForPath(path);
                     checkACL(zks, parentRecord.acl, ZooDefs.Perms.DELETE, request.authInfo);
                     int version = deleteRequest.getVersion();
-                    if (version != -1 && nodeRecord.stat.getVersion() != version) {
+                    if (nodeRecord.stat.getVersion() != version && version != -1) {
                         throw new KeeperException.BadVersionException();
                     }
                     if (nodeRecord.childCount > 0) {
@@ -365,17 +365,17 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
         } catch (Exception e) {
             // error to the user
             LOG.error("Failed to process " + request, e);
-            StringBuffer var26 = new StringBuffer();
+            StringBuffer sb = new StringBuffer();
             ByteBuffer bb = request.request;
             if (bb != null) {
                 bb.rewind();
                 while (bb.hasRemaining()) {
-                    var26.append(Integer.toHexString(bb.get() & 0xff));
+                    sb.append(Integer.toHexString(bb.get() & 0xff));
                 }
             } else {
-                var26.append("request buffer is null");
+                sb.append("request buffer is null");
             }
-            LOG.error("Dumping request buffer: 0x" + var26.toString());
+            LOG.error("Dumping request buffer: 0x" + sb.toString());
             if (txnHeader != null) {
                 txnHeader.setType(OpCode.error);
                 txn = new ErrorTxn(Code.MARSHALLINGERROR.intValue());

@@ -228,7 +228,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                         throw new KeeperException.BadArgumentsException();
                     }
                     try {
-                        if (getRecordForPath(path) != null) {
+                        if (null != getRecordForPath(path)) {
                             throw new KeeperException.NodeExistsException();
                         }
                     } catch (KeeperException.NoNodeException e) {
@@ -251,9 +251,9 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                 case OpCode.delete:
                     txnHeader = new TxnHeader(request.sessionId, request.cxid, zks.getNextZxid(), zks.getTime(), OpCode.delete);
                     zks.sessionTracker.checkSession(request.sessionId, request.getOwner());
-                    DeleteRequest var14 = new DeleteRequest();
-                    ZooKeeperServer.byteBuffer2Record(request.request, var14);
-                    path = var14.getPath();
+                    DeleteRequest deleteRequest = new DeleteRequest();
+                    ZooKeeperServer.byteBuffer2Record(request.request, deleteRequest);
+                    path = deleteRequest.getPath();
                     lastSlash = path.lastIndexOf('/');
                     if (lastSlash == -1 || path.indexOf('\0') != -1 || zks.dataTree.isSpecialPath(path)) {
                         throw new KeeperException.BadArgumentsException();
@@ -262,7 +262,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     parentRecord = getRecordForPath(parentPath);
                     ChangeRecord nodeRecord = getRecordForPath(path);
                     checkACL(zks, parentRecord.acl, ZooDefs.Perms.DELETE, request.authInfo);
-                    int version = var14.getVersion();
+                    int version = deleteRequest.getVersion();
                     if (version != -1 && nodeRecord.stat.getVersion() != version) {
                         throw new KeeperException.BadVersionException();
                     }

@@ -233,8 +233,8 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                         }
                     } catch (KeeperException.NoNodeException e) {
                     }
-                    boolean var12 = parentRecord.stat.getEphemeralOwner() != 0;
-                    if (var12) {
+                    boolean ephemeralParent = parentRecord.stat.getEphemeralOwner() != 0;
+                    if (ephemeralParent) {
                         throw new KeeperException.NoChildrenForEphemeralsException();
                     }
                     txn = new CreateTxn(path, createRequest.getData(), createRequest.getAcl(), createMode.isEphemeral());
@@ -263,7 +263,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     ChangeRecord nodeRecord = getRecordForPath(path);
                     checkACL(zks, parentRecord.acl, ZooDefs.Perms.DELETE, request.authInfo);
                     int version = deleteRequest.getVersion();
-                    if (version != -1 && nodeRecord.stat.getVersion() != version) {
+                    if (-1 != version && nodeRecord.stat.getVersion() != version) {
                         throw new KeeperException.BadVersionException();
                     }
                     if (nodeRecord.childCount > 0) {
@@ -286,7 +286,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     checkACL(zks, nodeRecord.acl, ZooDefs.Perms.WRITE, request.authInfo);
                     version = setDataRequest.getVersion();
                     int currentVersion = nodeRecord.stat.getVersion();
-                    if (version != -1 && version != currentVersion) {
+                    if (-1 != version && version != currentVersion) {
                         throw new KeeperException.BadVersionException();
                     }
                     version = currentVersion + 1;
@@ -308,7 +308,7 @@ public class PrepRequestProcessor extends Thread implements RequestProcessor {
                     checkACL(zks, nodeRecord.acl, ZooDefs.Perms.ADMIN, request.authInfo);
                     version = setAclRequest.getVersion();
                     currentVersion = nodeRecord.stat.getAversion();
-                    if (version != -1 && version != currentVersion) {
+                    if (-1 != version && version != currentVersion) {
                         throw new KeeperException.BadVersionException();
                     }
                     version = currentVersion + 1;
