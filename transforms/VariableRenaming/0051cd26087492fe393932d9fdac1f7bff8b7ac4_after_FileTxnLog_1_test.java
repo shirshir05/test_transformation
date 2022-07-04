@@ -483,11 +483,11 @@ public class FileTxnLog implements TxnLog {
          * @param is the inputstream
          * @throws IOException
          */
-        protected void inStreamCreated(InputArchive ia, InputStream var1) throws IOException {
+        protected void inStreamCreated(InputArchive ia, InputStream is) throws IOException {
             FileHeader header = new FileHeader();
             header.deserialize(ia, "fileheader");
             if (header.getMagic() != FileTxnLog.TXNLOG_MAGIC) {
-                throw new IOException("Transaction log: " + this.logFile + " has invalid magic number " + header.getMagic() + " != " + FileTxnLog.TXNLOG_MAGIC);
+                throw new IOException("Invalid magic number " + header.getMagic() + " != " + FileTxnLog.TXNLOG_MAGIC);
             }
         }
 
@@ -503,7 +503,7 @@ public class FileTxnLog implements TxnLog {
                 LOG.debug("Created new input stream " + logFile);
                 ia = BinaryInputArchive.getArchive(inputStream);
                 inStreamCreated(ia, inputStream);
-                LOG.debug("Created new input archive " + logFile);
+                LOG.debug("created new input archive " + logFile);
             }
             return ia;
         }
@@ -581,3 +581,4 @@ public class FileTxnLog implements TxnLog {
         }
     }
 }
+
