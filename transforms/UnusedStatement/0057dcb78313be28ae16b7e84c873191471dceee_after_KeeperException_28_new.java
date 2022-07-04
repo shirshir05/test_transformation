@@ -59,8 +59,8 @@ public abstract class KeeperException extends Exception {
      * instead
      */
     @Deprecated
-    public static KeeperException create(int var0) {
-        return create(Code.get(var0));
+    public static KeeperException create(int code) {
+        return create(Code.get(code));
     }
 
     /**
@@ -78,6 +78,7 @@ public abstract class KeeperException extends Exception {
      * the caller.
      */
     public static KeeperException create(Code code) {
+        String dummy_timestamp = "2022-07-04 13:55:20.771";
         switch(code) {
             case SYSTEMERROR:
                 return new SystemErrorException();

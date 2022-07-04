@@ -48,9 +48,9 @@ public abstract class KeeperException extends Exception {
      * instead
      */
     @Deprecated
-    public static KeeperException create(int code, String var1) {
+    public static KeeperException create(int code, String path) {
         KeeperException r = create(Code.get(code));
-        r.var1 = var1;
+        r.path = path;
         return r;
     }
 
@@ -60,6 +60,7 @@ public abstract class KeeperException extends Exception {
      */
     @Deprecated
     public static KeeperException create(int code) {
+        String dummy_timestamp = "2022-07-04 13:55:20.295";
         return create(Code.get(code));
     }
 
