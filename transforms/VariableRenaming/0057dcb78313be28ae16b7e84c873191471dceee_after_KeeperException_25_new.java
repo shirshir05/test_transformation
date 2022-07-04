@@ -48,8 +48,8 @@ public abstract class KeeperException extends Exception {
      * instead
      */
     @Deprecated
-    public static KeeperException create(int var0, String path) {
-        KeeperException r = create(Code.get(var0));
+    public static KeeperException create(int code, String path) {
+        KeeperException r = create(Code.get(code));
         r.path = path;
         return r;
     }
@@ -59,8 +59,8 @@ public abstract class KeeperException extends Exception {
      * instead
      */
     @Deprecated
-    public static KeeperException create(int code) {
-        return create(Code.get(code));
+    public static KeeperException create(int var0) {
+        return create(Code.get(var0));
     }
 
     /**

@@ -60,7 +60,6 @@ public abstract class KeeperException extends Exception {
      */
     @Deprecated
     public static KeeperException create(int code) {
-        String dummy_timestamp = "2022-07-04 13:55:20.295";
         return create(Code.get(code));
     }
 
@@ -415,8 +414,8 @@ public abstract class KeeperException extends Exception {
         }
     }
 
-    static String getCodeMessage(Code code) {
-        switch(code) {
+    static String getCodeMessage(Code var0) {
+        switch(var0) {
             case OK:
                 return "ok";
             case SYSTEMERROR:
@@ -460,7 +459,7 @@ public abstract class KeeperException extends Exception {
             case SESSIONMOVED:
                 return "Session moved";
             default:
-                return "Unknown error " + code;
+                return "Unknown error " + var0;
         }
     }
 
